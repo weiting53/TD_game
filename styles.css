@@ -1,0 +1,151 @@
+:root {
+    --terminal-bg: #1a1a1a;
+    --terminal-text: #00ff00;
+    --terminal-white: #ffffff;
+    --terminal-red: #ff0000;
+    --terminal-dim: #666666;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Courier New', monospace;
+}
+
+body {
+    background-color: var(--terminal-bg);
+    color: var(--terminal-text);
+    line-height: 1.6;
+    padding: 20px;
+}
+
+#app {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.screen {
+    display: none;
+    padding: 20px;
+}
+
+.screen.active {
+    display: block;
+}
+
+.terminal-header {
+    color: var(--terminal-white);
+    margin-bottom: 20px;
+    font-size: 1em;
+}
+
+.terminal-path {
+    color: var(--terminal-dim);
+    margin-bottom: 10px;
+}
+
+h1 {
+    color: var(--terminal-text);
+    margin: 20px 0;
+    font-size: 1.5em;
+    text-transform: uppercase;
+}
+
+.terminal-btn {
+    background: transparent;
+    color: var(--terminal-text);
+    border: 1px solid var(--terminal-text);
+    padding: 8px 16px;
+    margin: 5px;
+    cursor: pointer;
+    font-family: 'Courier New', monospace;
+    transition: all 0.3s;
+}
+
+.terminal-btn:hover {
+    background: var(--terminal-text);
+    color: var(--terminal-bg);
+}
+
+.terminal-btn.active {
+    background: var(--terminal-text);
+    color: var(--terminal-bg);
+}
+
+.input-group {
+    margin: 20px 0;
+}
+
+input[type="text"] {
+    background: transparent;
+    border: 1px solid var(--terminal-text);
+    color: var(--terminal-white);
+    padding: 8px;
+    margin: 5px;
+    width: 200px;
+    font-family: 'Courier New', monospace;
+}
+
+.question-container {
+    border: 1px solid var(--terminal-text);
+    padding: 20px;
+    margin: 20px 0;
+    position: relative;
+}
+
+.question-container::before {
+    content: "$ SELECT_QUESTION";
+    position: absolute;
+    top: -10px;
+    left: 10px;
+    background: var(--terminal-bg);
+    padding: 0 5px;
+    color: var(--terminal-dim);
+}
+
+#question-display {
+    font-size: 1.2em;
+    margin: 20px 0;
+    color: var(--terminal-white);
+    white-space: pre-wrap;
+}
+
+.player-info {
+    color: var(--terminal-dim);
+    margin: 10px 0;
+}
+
+.ascii-art {
+    color: var(--terminal-text);
+    font-size: 1.2em;
+    margin: 20px 0;
+    white-space: pre;
+}
+
+.terminal-prompt::before {
+    content: "$ ";
+    color: var(--terminal-dim);
+}
+
+.theme-selector {
+    margin: 20px 0;
+}
+
+.modal {
+    background: rgba(0, 0, 0, 0.9);
+    border: 1px solid var(--terminal-text);
+    padding: 20px;
+    margin: 20px 0;
+    position: relative;
+}
+
+.modal::before {
+    content: "OUTPUT:";
+    position: absolute;
+    top: -10px;
+    left: 10px;
+    background: var(--terminal-bg);
+    padding: 0 5px;
+    color: var(--terminal-dim);
+} 
