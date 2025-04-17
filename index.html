@@ -3,98 +3,131 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>真心話大冒險 - Terminal Edition</title>
+    <title>Couple Game Terminal</title>
     <meta name="theme-color" content="#1a1a1a">
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="styles.css">
     <link rel="apple-touch-icon" href="icons/icon-192x192.png">
+    <style>
+        body {
+            background-color: black;
+            color: #00ff00;
+            font-family: monospace;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            text-align: center;
+        }
+        .terminal-container {
+            width: 100%;
+            max-width: 800px;
+        }
+        .ascii-art {
+            white-space: pre;
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+        .game-title {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        .button-container {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-bottom: 40px;
+        }
+        .terminal-btn {
+            background-color: transparent;
+            border: 1px solid #00ff00;
+            color: #00ff00;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-family: monospace;
+            transition: all 0.3s;
+            font-size: 16px;
+            min-width: 200px;
+        }
+        .terminal-btn:hover {
+            background-color: #00ff00;
+            color: black;
+        }
+        .status-text {
+            color: #00ff00;
+            margin-bottom: 20px;
+        }
+        .loading-bar {
+            width: 100%;
+            max-width: 800px;
+            height: 20px;
+            border: 1px solid #00ff00;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+        .loading-progress {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, 
+                #00ff00 0%, 
+                #ff69b4 50%, 
+                #ff0000 75%,
+                #bbf9a7 100%);
+            animation: loading 4s linear infinite;
+            transform-origin: left;
+        }
+        @keyframes loading {
+            0% {
+                transform: translateX(-100%);
+            }
+            100% {
+                transform: translateX(100%);
+            }
+        }
+    </style>
 </head>
 <body>
-    <div id="app">
-        <!-- 首頁 -->
-        <div id="home-screen" class="screen active">
-            <div class="terminal-header">
-                <div class="terminal-path">root@truth-or-dare:~$ ./start_game.sh</div>
-                <pre class="ascii-art">
-┌────────────────────────────────┐
-│    Truth or Dare CLI v1.0.0    │
-│    [SYSTEM READY]              │
-└────────────────────────────────┘
- _____           _   _       ___    ____                 
-|_   _| _ _  _  | |_| |_    |   \  |_ _|_ _ _ _  ___ 
-  | |  | '_|| | |  _| ' \   | |) |  | || '_| '_|/ -_)
-  |_|  |_|  |_|  \__|_||_|  |___/  |_||_| |_|  \___|
-
-[INITIALIZING GAME COMPONENTS...]
-[LOADING MODULES............OK]
-[SYSTEM STATUS: READY]
-                </pre>
-            </div>
-            <div class="terminal-prompt">
-                <button id="start-game" class="terminal-btn">EXECUTE GAME</button>
-            </div>
-            <div class="theme-selector terminal-prompt">
-                SELECT THEME:
-                <button class="terminal-btn" data-theme="pure">PURE</button>
-                <button class="terminal-btn" data-theme="spicy">SPICY</button>
-                <button class="terminal-btn" data-theme="casual">CASUAL</button>
-            </div>
+    <div class="terminal-container">
+        <div class="ascii-art">
+   _____                    _        _____                      
+  / ____|                  | |      / ____|                     
+ | |     ___  _   _ _ __ | | ___  | |  __  __ _ _ __ ___   ___ 
+ | |    / _ \| | | | '_ \| |/ _ \ | | |_ |/ _` | '_ ` _ \ / _ \
+ | |___| (_) | |_| | |_) | |  __/ | |__| | (_| | | | | | |  __/
+  \_____\___/ \__,_| .__/|_|\___|  \_____|\__,_|_| |_| |_|\___|
+                   | |                                           
+                   |_|                                           
         </div>
 
-        <!-- 玩家名稱輸入頁面 -->
-        <div id="player-setup" class="screen">
-            <div class="terminal-header">
-                <div class="terminal-path">root@truth-or-dare:~/setup$ ./configure_players.sh</div>
-                <pre class="ascii-art">
-    (•_•)  PLAYER SETUP  (•_•)
-    <)   )> ========== <)   )>
-    /    \            /    \
-                </pre>
-            </div>
-            <div class="terminal-prompt">
-                ENTER PLAYER NAMES:
-            </div>
-            <div class="input-group">
-                <input type="text" id="player-a" placeholder="PLAYER_A">
-                <input type="text" id="player-b" placeholder="PLAYER_B">
-            </div>
-            <button id="confirm-players" class="terminal-btn">INITIALIZE GAME</button>
+        <div class="status-text">[SYSTEM READY]</div>
+        <div class="loading-bar">
+            <div class="loading-progress"></div>
         </div>
 
-        <!-- 遊戲主畫面 -->
-        <div id="game-screen" class="screen">
-            <div class="terminal-header">
-                <div class="terminal-path">root@truth-or-dare:~/game$ ./play.sh</div>
-            </div>
-            <div class="player-info terminal-prompt">
-                <span id="current-player"></span>
-            </div>
-            <div class="question-container">
-                <div class="question-type terminal-prompt">
-                    SELECT MODE:
-                    <button id="truth-btn" class="terminal-btn active">TRUTH</button>
-                    <button id="dare-btn" class="terminal-btn">DARE</button>
-                </div>
-                <pre id="yes-art" class="ascii-art" style="display: none;">
- __   _____ _____ 
- \ \ / / __|   __|
-  \ V /\__ \|   \ 
-   \_/ |___/|___/
-
-    (•_•)
-    <)   )>  CHALLENGE ACCEPTED!
-    /    \
-                </pre>
-                <div id="question-display"></div>
-            </div>
-            <div class="terminal-prompt">
-                <button id="draw-question" class="terminal-btn">GENERATE QUESTION</button>
-                <button id="complete" class="terminal-btn">END TURN</button>
-            </div>
+        <div class="button-container">
+            <button class="terminal-btn" onclick="location.href='truth-dare.html'">TRUTH OR DARE</button>
+            <button class="terminal-btn" onclick="location.href='this-or-that.html'">THIS OR THAT</button>
         </div>
     </div>
 
-    <script src="questions.js"></script>
-    <script src="app.js"></script>
+    <script>
+        // 添加打字機效果
+        function typeWriter(element, text, i = 0) {
+            if (i < text.length) {
+                element.textContent += text.charAt(i);
+                setTimeout(() => typeWriter(element, text, i + 1), 50);
+            }
+        }
+
+        // 系統狀態文字動畫
+        const statusText = document.querySelector('.status-text');
+        setInterval(() => {
+            statusText.style.opacity = statusText.style.opacity === '0' ? '1' : '0';
+        }, 1000);
+    </script>
 </body>
 </html> 

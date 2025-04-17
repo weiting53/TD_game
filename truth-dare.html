@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Truth or Dare - Player Setup</title>
+    <style>
+        body {
+            background-color: black;
+            color: #00ff00;
+            font-family: monospace;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            text-align: center;
+        }
+        .terminal-container {
+            width: 100%;
+            max-width: 800px;
+        }
+        .ascii-art {
+            white-space: pre;
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+        .input-container {
+            margin: 20px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            align-items: center;
+        }
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 100%;
+            max-width: 300px;
+        }
+        .input-label {
+            text-align: left;
+            color: #00ff00;
+        }
+        input {
+            background-color: transparent;
+            border: 1px solid #00ff00;
+            color: #00ff00;
+            padding: 10px;
+            font-family: monospace;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        input:focus {
+            outline: none;
+            border-color: #ff69b4;
+        }
+        .terminal-btn {
+            background-color: transparent;
+            border: 1px solid #00ff00;
+            color: #00ff00;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-family: monospace;
+            transition: all 0.3s;
+            font-size: 16px;
+            min-width: 200px;
+            margin-top: 20px;
+        }
+        .terminal-btn:hover {
+            background-color: #00ff00;
+            color: black;
+        }
+        .error-message {
+            color: #ff0000;
+            margin-top: 10px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="terminal-container">
+        <div class="ascii-art">
+ _____         _   _       ___    ____              
+|_   _| _ _ _ | |_| |_    |   \  |_ _|_ _ _ _  ___ 
+  | |  | '_| | |  _| ' \   | |) |  | || '_| '_|/ -_)
+  |_|  |_| |_| \__|_||_|  |___/  |_||_| |_|  \___|
+
+[PLAYER SETUP INITIALIZED]
+        </div>
+
+        <div class="input-container">
+            <div class="input-group">
+                <div class="input-label">> ENTER MAN NAME:</div>
+                <input type="text" id="man-name" placeholder="_">
+            </div>
+            <div class="input-group">
+                <div class="input-label">> ENTER WOMAN NAME:</div>
+                <input type="text" id="woman-name" placeholder="_">
+            </div>
+        </div>
+
+        <div class="error-message" id="error-msg">Please enter both names to continue.</div>
+        
+        <button class="terminal-btn" onclick="startGame()">START GAME</button>
+    </div>
+
+    <script>
+        function startGame() {
+            const manName = document.getElementById('man-name').value.trim();
+            const womanName = document.getElementById('woman-name').value.trim();
+            const errorMsg = document.getElementById('error-msg');
+
+            if (!manName || !womanName) {
+                errorMsg.style.display = 'block';
+                return;
+            }
+
+            // 儲存玩家名稱到 sessionStorage
+            sessionStorage.setItem('manName', manName);
+            sessionStorage.setItem('womanName', womanName);
+            
+            // 跳轉到遊戲頁面
+            location.href = 'game.html';
+        }
+
+        // 添加輸入框閃爍游標效果
+        const inputs = document.querySelectorAll('input');
+        inputs.forEach(input => {
+            input.addEventListener('focus', () => {
+                input.placeholder = '';
+            });
+            input.addEventListener('blur', () => {
+                input.placeholder = '_';
+            });
+        });
+    </script>
+</body>
+</html> 

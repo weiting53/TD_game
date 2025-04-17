@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Truth or Dare - Game</title>
+    <style>
+        body {
+            background-color: black;
+            color: #00ff00;
+            font-family: monospace;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            text-align: center;
+        }
+        .terminal-container {
+            width: 100%;
+            max-width: 800px;
+        }
+        .game-header {
+            margin-bottom: 30px;
+            border: 1px solid #00ff00;
+            padding: 20px;
+        }
+        .current-player {
+            font-size: 20px;
+            margin-bottom: 20px;
+        }
+        .mode-selection {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+        .terminal-btn {
+            background-color: transparent;
+            border: 1px solid #00ff00;
+            color: #00ff00;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-family: monospace;
+            transition: all 0.3s;
+            font-size: 16px;
+            min-width: 150px;
+        }
+        .terminal-btn:hover, .terminal-btn.active {
+            background-color: #00ff00;
+            color: black;
+        }
+        .question-display {
+            margin: 30px 0;
+            min-height: 100px;
+            border: 1px solid #00ff00;
+            padding: 20px;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .ascii-art {
+            display: none;
+            white-space: pre;
+            font-size: 14px;
+            margin: 20px 0;
+            color: #ff69b4;
+        }
+    </style>
+</head>
+<body>
+    <div class="terminal-container">
+        <div class="game-header">
+            <div class="current-player" id="current-player"></div>
+            <div class="mode-selection">
+                <button class="terminal-btn active" onclick="setMode('truth')">TRUTH</button>
+                <button class="terminal-btn" onclick="setMode('dare')">DARE</button>
+            </div>
+        </div>
+
+        <div class="ascii-art" id="yes-art">
+  __   _____ _____ 
+  \ \ / / __|   __|
+   \ V /\__ \|   \ 
+    \_/ |___/|___/
+        </div>
+
+        <div class="question-display" id="question-display">
+            [WAITING FOR QUESTION GENERATION...]
+        </div>
+
+        <div class="button-container">
+            <button class="terminal-btn" onclick="generateQuestion()">GENERATE QUESTION</button>
+            <button class="terminal-btn" onclick="nextPlayer()">NEXT PLAYER</button>
+        </div>
+    </div>
+
+    <script src="questions.js"></script>
+    <script>
+        let currentPlayer = 'man';
+        let currentMode = 'truth';
+        const manName = sessionStorage.getItem('manName') || 'MAN';
+        const womanName = sessionStorage.getItem('womanName') || 'WOMAN';
+
+        function updateCurrentPlayer() {
+            const name = currentPlayer === 'man' ? manName : womanName;
+            document.getElementById('current-player').textContent = `CURRENT PLAYER: ${name}`;
+        }
+
+        function setMode(mode) {
+            currentMode = mode;
+            document.querySelectorAll('.mode-selection .terminal-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        }
+
+        function generateQuestion() {
+            const questionList = questions[currentPlayer][currentMode];
+            const randomIndex = Math.floor(Math.random() * questionList.length);
+            const yesArt = document.getElementById('yes-art');
+            const questionDisplay = document.getElementById('question-display');
+
+            yesArt.style.display = 'block';
+            setTimeout(() => {
+                questionDisplay.textContent = questionList[randomIndex];
+            }, 1000);
+        }
+
+        function nextPlayer() {
+            currentPlayer = currentPlayer === 'man' ? 'woman' : 'man';
+            updateCurrentPlayer();
+            document.getElementById('yes-art').style.display = 'none';
+            document.getElementById('question-display').textContent = '[WAITING FOR QUESTION GENERATION...]';
+        }
+
+        // 初始化
+        updateCurrentPlayer();
+    </script>
+</body>
+</html> 

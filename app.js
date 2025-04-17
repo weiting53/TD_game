@@ -1,9 +1,9 @@
 // 遊戲狀態
 let gameState = {
-    currentTheme: 'pure',
-    currentPlayer: 'A',
-    playerA: '',
-    playerB: '',
+    currentGame: null,
+    currentPlayer: 'man',
+    playerMan: '',
+    playerWoman: '',
     currentQuestionType: 'truth'
 };
 
@@ -11,14 +11,16 @@ let gameState = {
 const screens = {
     home: document.getElementById('home-screen'),
     playerSetup: document.getElementById('player-setup'),
-    game: document.getElementById('game-screen')
+    truthDare: document.getElementById('truth-dare-screen'),
+    flyingChess: document.getElementById('flying-chess-screen')
 };
 
 const elements = {
-    startGame: document.getElementById('start-game'),
+    truthDareBtn: document.getElementById('truth-dare-btn'),
+    flyingChessBtn: document.getElementById('flying-chess-btn'),
     confirmPlayers: document.getElementById('confirm-players'),
-    playerAInput: document.getElementById('player-a'),
-    playerBInput: document.getElementById('player-b'),
+    playerManInput: document.getElementById('player-man'),
+    playerWomanInput: document.getElementById('player-woman'),
     currentPlayer: document.getElementById('current-player'),
     questionDisplay: document.getElementById('question-display'),
     truthBtn: document.getElementById('truth-btn'),
@@ -44,20 +46,16 @@ function typeWriter(element, text, speed = 50) {
 
 // 事件監聽器
 document.addEventListener('DOMContentLoaded', () => {
-    // 主題選擇
-    document.querySelectorAll('.terminal-btn').forEach(btn => {
-        if (btn.dataset.theme) {
-            btn.addEventListener('click', () => {
-                gameState.currentTheme = btn.dataset.theme;
-                document.querySelectorAll('[data-theme]').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                typeWriter(btn, btn.textContent);
-            });
-        }
+    // 遊戲選擇
+    elements.truthDareBtn.addEventListener('click', () => {
+        gameState.currentGame = 'truth-dare';
+        screens.home.classList.remove('active');
+        screens.playerSetup.classList.add('active');
+        typeWriter(document.querySelector('.terminal-prompt'), 'ENTER PLAYER NAMES:');
     });
 
-    // 開始遊戲
-    elements.startGame.addEventListener('click', () => {
+    elements.flyingChessBtn.addEventListener('click', () => {
+        gameState.currentGame = 'flying-chess';
         screens.home.classList.remove('active');
         screens.playerSetup.classList.add('active');
         typeWriter(document.querySelector('.terminal-prompt'), 'ENTER PLAYER NAMES:');
@@ -65,10 +63,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 確認玩家
     elements.confirmPlayers.addEventListener('click', () => {
-        gameState.playerA = elements.playerAInput.value || 'PLAYER_A';
-        gameState.playerB = elements.playerBInput.value || 'PLAYER_B';
+        gameState.playerMan = elements.playerManInput.value || 'MAN';
+        gameState.playerWoman = elements.playerWomanInput.value || 'WOMAN';
         screens.playerSetup.classList.remove('active');
-        screens.game.classList.add('active');
+        
+        if (gameState.currentGame === 'truth-dare') {
+            screens.truthDare.classList.add('active');
+        } else if (gameState.currentGame === 'flying-chess') {
+            screens.flyingChess.classList.add('active');
+        }
+        
         updateCurrentPlayer();
     });
 
@@ -94,7 +98,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // 延遲顯示題目
         setTimeout(() => {
-            const questionList = questions[gameState.currentTheme][gameState.currentQuestionType];
+            const questionList = questions[gameState.currentPlayer][gameState.currentQuestionType];
             const randomIndex = Math.floor(Math.random() * questionList.length);
             typeWriter(elements.questionDisplay, questionList[randomIndex]);
         }, 1000);
@@ -102,7 +106,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 完成
     elements.complete.addEventListener('click', () => {
-        gameState.currentPlayer = gameState.currentPlayer === 'A' ? 'B' : 'A';
+        gameState.currentPlayer = gameState.currentPlayer === 'man' ? 'woman' : 'man';
         updateCurrentPlayer();
         elements.questionDisplay.textContent = '';
         elements.yesArt.style.display = 'none';
@@ -111,7 +115,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // 更新當前玩家
 function updateCurrentPlayer() {
-    const playerName = gameState.currentPlayer === 'A' ? gameState.playerA : gameState.playerB;
+    const playerName = gameState.currentPlayer === 'man' ? gameState.playerMan : gameState.playerWoman;
     typeWriter(elements.currentPlayer, `CURRENT_USER: ${playerName}`);
 }
 

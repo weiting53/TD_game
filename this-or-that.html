@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>This or That</title>
+    <style>
+        body {
+            background-color: black;
+            color: #00ff00;
+            font-family: monospace;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .game-container {
+            flex: 1;
+            display: flex;
+            position: relative;
+        }
+
+        .choice {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .choice-this {
+            background-color: #330000;
+        }
+
+        .choice-that {
+            background-color: #003300;
+        }
+
+        .choice:hover {
+            transform: scale(1.02);
+        }
+
+        .choice-text {
+            position: relative;
+            z-index: 2;
+            padding: 20px;
+            text-align: center;
+            color: white;
+            text-shadow: 0 0 10px rgba(255,255,255,0.5);
+        }
+
+        .choice-this:hover {
+            background-color: #660000;
+        }
+
+        .choice-that:hover {
+            background-color: #006600;
+        }
+
+        .vs-text {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 36px;
+            color: #ffffff;
+            z-index: 3;
+            text-shadow: 0 0 10px rgba(255,255,255,0.5);
+        }
+
+        .question-counter {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: #ffffff;
+            font-size: 18px;
+            z-index: 3;
+        }
+
+        .end-game {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: #ff0000;
+            font-size: 18px;
+            cursor: pointer;
+            z-index: 3;
+            text-decoration: underline;
+        }
+
+        .end-game:hover {
+            color: #ff6666;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .choice.clicked {
+            animation: pulse 0.5s ease-out;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .game-end-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            z-index: 10;
+        }
+
+        .game-end-text {
+            color: #00ff00;
+            font-size: 24px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .end-options {
+            display: flex;
+            gap: 20px;
+        }
+
+        .end-option-btn {
+            background-color: transparent;
+            border: 1px solid #00ff00;
+            color: #00ff00;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-family: monospace;
+            font-size: 18px;
+            transition: all 0.3s;
+        }
+
+        .end-option-btn:hover {
+            background-color: #00ff00;
+            color: black;
+        }
+    </style>
+</head>
+<body>
+    <div class="question-counter" id="counter"></div>
+    <div class="end-game" onclick="showEndGame()">結束遊戲</div>
+    <div class="game-container">
+        <div class="choice choice-this" onclick="nextQuestion('this')">
+            <div class="choice-text" id="this-text"></div>
+        </div>
+        <div class="vs-text">VS</div>
+        <div class="choice choice-that" onclick="nextQuestion('that')">
+            <div class="choice-text" id="that-text"></div>
+        </div>
+    </div>
+
+    <div class="game-end-overlay" id="gameEndOverlay">
+        <div class="game-end-text">遊戲結束！</div>
+        <div class="end-options">
+            <button class="end-option-btn" onclick="restartGame()">再玩一次</button>
+            <button class="end-option-btn" onclick="location.href='index.html'">回到首頁</button>
+        </div>
+    </div>
+
+    <script src="this-or-that-questions.js"></script>
+    <script>
+        let currentQuestionIndex = -1;
+        let usedQuestions = new Set();
+        const QUESTIONS_PER_GAME = 7;
+
+        function getRandomQuestion() {
+            if (usedQuestions.size >= QUESTIONS_PER_GAME) {
+                showEndGame();
+                return -1;
+            }
+            
+            let availableQuestions = thisOrThatQuestions.filter((_, index) => !usedQuestions.has(index));
+            let randomIndex = Math.floor(Math.random() * availableQuestions.length);
+            let questionIndex = thisOrThatQuestions.indexOf(availableQuestions[randomIndex]);
+            
+            usedQuestions.add(questionIndex);
+            return questionIndex;
+        }
+
+        function updateCounter() {
+            document.getElementById('counter').textContent = 
+                `${usedQuestions.size} / ${QUESTIONS_PER_GAME}`;
+        }
+
+        function showEndGame() {
+            document.getElementById('gameEndOverlay').style.display = 'flex';
+        }
+
+        function restartGame() {
+            usedQuestions.clear();
+            document.getElementById('gameEndOverlay').style.display = 'none';
+            nextQuestion('this');
+        }
+
+        function nextQuestion(choice) {
+            // 添加點擊動畫
+            document.querySelector(`.choice-${choice}`).classList.add('clicked');
+            setTimeout(() => {
+                document.querySelector(`.choice-${choice}`).classList.remove('clicked');
+            }, 500);
+
+            currentQuestionIndex = getRandomQuestion();
+            if (currentQuestionIndex === -1) return;
+            
+            const question = thisOrThatQuestions[currentQuestionIndex];
+
+            const thisText = document.getElementById('this-text');
+            const thatText = document.getElementById('that-text');
+
+            thisText.style.opacity = 0;
+            thatText.style.opacity = 0;
+
+            setTimeout(() => {
+                thisText.textContent = question.this;
+                thatText.textContent = question.that;
+                thisText.classList.add('fade-in');
+                thatText.classList.add('fade-in');
+                thisText.style.opacity = 1;
+                thatText.style.opacity = 1;
+                updateCounter();
+            }, 300);
+        }
+
+        // 初始化第一個問題
+        nextQuestion('this');
+    </script>
+</body>
+</html> 
